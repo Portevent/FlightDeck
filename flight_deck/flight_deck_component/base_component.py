@@ -73,12 +73,13 @@ class BaseComponent:
         if self.parent:
             self.parent.updatePosition()
 
-    def __init__(self, content: List[BaseComponent] | None = None, x: int = 0, y: int = 0, width: int = 0, height: int = 0):
+    def __init__(self, content: List[BaseComponent] | None = None, x: int = 0, y: int = 0, width: int = 0, height: int = 0, parent: BaseComponent | None = None):
         self.__content = content or []
         self.__x = int(x)
         self.__y = int(y)
         self.__width = int(width)
         self.__height = int(height)
+        self.parent = parent
 
     def getContent(self) -> List[BaseComponent]:
         return self.__content

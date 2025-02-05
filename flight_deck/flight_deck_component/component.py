@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Tuple, Type, Dict
+from typing import List, Tuple, Type, Dict, Callable
 from xml.etree import ElementTree
 from xml.dom.minidom import Element
 
@@ -21,12 +21,33 @@ def Input(name: str):
             return self._inputs[name]
 
         def setInput(self, value):
-            if self._inputs[name] == value:
+            if self._inputs.get(name) == value:
                 return
-            self._inputs[name] = value
-            self.onInputChange(name, value)
+            self.updateInput(name, value)
 
         setattr(cls, name, property(getInput, setInput))
+        return cls
+
+    return addProperty
+
+def Output(name: str):
+    """
+    Add Output to a component
+    :param name: Output name to bind to
+    """
+
+    def addProperty(cls: Type[Component]):
+
+        def getOutput(self):
+            return self._outputs[name]
+
+        def setOutput(self, value):
+            if self._outputs.get(name) == value:
+                return
+            self._outputs[name] = value
+            self.onOutputChange(name, value)
+
+        setattr(cls, name, property(getOutput, setOutput))
         return cls
 
     return addProperty
@@ -62,20 +83,44 @@ class Component(BaseComponent):
     _flight_deck_template: Element | None = None
 
     _inputs: Dict[str, any]
+    _outputs: Dict[str, any]
+    _outputsObersvers: Dict[str, List[Callable]]
 
     client: FlightDeckBaseClient
 
     id: str
 
-    def __init__(self, client: FlightDeckBaseClient, inputs: Dict[str, any] | None = None, **kwargs):
+    def __init__(self, client: FlightDeckBaseClient, inputs: Dict[str, any] | None = None, binds: List[Tuple[Component, str, str]] | None = None, **kwargs):
         super().__init__(**kwargs)
         self.client = client
         self._display = client.display
         self._inputs = inputs or {}
+        self._outputs = {}
+        self._outputsObersvers = {}
+        if binds:
+            for page, input, bind in binds:
+                def updateInput(value):
+                    self.updateInput(input, value)
+                page.addOutputListener(bind, updateInput)
+
         self.start()
 
     def start(self):
         pass
+
+    def addOutputListener(self, output: str, callable: Callable):
+        if output not in self._outputsObersvers:
+            self._outputsObersvers[output] = []
+
+        self._outputsObersvers[output].append(callable)
+
+    def onOutputChange(self, output: str, value):
+        for observer in self._outputsObersvers.get(output, []):
+            observer(value)
+
+    def updateInput(self, input: str, value: any):
+        self._inputs[input] = value
+        self.onInputChange(input, value)
 
     def _displayText(self, text: List[str] | str, position: Tuple[int, int] = (0,0), color: Color = Color.CLASSIC):
         """

@@ -48,6 +48,7 @@ class ComponentBuilder:
             ComponentBuilder.__instantiate_element(
                 componentClass=client.getComponent(element.tag),
                 client=client,
+                parent=instance,
                 **ComponentBuilder.__parse_attributes(element.attrib, instance)
             )
         )
@@ -55,7 +56,8 @@ class ComponentBuilder:
     @staticmethod
     def __parse_attributes(attributes, page: Component):
         arguments = {
-            'inputs': {}
+            'inputs': {},
+            'binds': []
         }
 
         for key in attributes:
@@ -63,6 +65,9 @@ class ComponentBuilder:
                 continue
 
             value = ComponentBuilder.__parse_attribute(key, attributes[key], page)
+
+            if attributes[key][0] == '#':
+                arguments['binds'].append((page, key, attributes[key][1:]))
 
             if key[0] == "_":
                 arguments[key[1:]] = value
@@ -73,7 +78,7 @@ class ComponentBuilder:
 
     @staticmethod
     def __parse_attribute(key, value, page):
-        if value[0] == "@":
+        if value[0] == "@" or value[0] == "#":
             return getattr(page, value[1:])
 
         return value
