@@ -80,5 +80,5 @@ class FlightDeckDom:
         elif char == curses.KEY_DC:
             self.selected_component.suppr()
 
-        elif chr(char) in "abcdefghtijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,?;.:/|\\!*$^¨`_-=+'\"{}()[]°@&~éèàç":
+        else:
             self.selected_component.inputChar(chr(char))
