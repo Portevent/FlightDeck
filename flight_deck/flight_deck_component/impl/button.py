@@ -8,9 +8,11 @@ from flight_deck.flight_deck_component.interaction_component import InteractionC
 @ComponentName("button")
 @Input("text")
 @Input("onClick")
-@Template("""<Template>
-<text text="@formatted_text"/>
-</Template>""")
+@Template("""
+<Template>
+    <text text="@formatted_text"/>
+</Template>
+""")
 class ButtonComponent(InteractionComponent):
 
     text: str

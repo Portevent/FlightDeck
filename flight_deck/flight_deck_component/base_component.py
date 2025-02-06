@@ -5,7 +5,11 @@ from typing import List
 
 class BaseComponent:
 
-    __content: List[BaseComponent] = []
+    _contents: List[BaseComponent] = []
+
+    # Position within component to place next component
+    _next_content_x: int
+    _next_content_y: int
 
     parent: BaseComponent | None = None
 
@@ -73,19 +77,21 @@ class BaseComponent:
         if self.parent:
             self.parent.updatePosition()
 
-    def __init__(self, content: List[BaseComponent] | None = None, x: int = 0, y: int = 0, width: int = 0, height: int = 0, parent: BaseComponent | None = None):
-        self.__content = content or []
+    def __init__(self, content: List[BaseComponent] | None = None, x: int = 0, y: int = 0, width: int = 0, height: int = 1, parent: BaseComponent | None = None):
+        self._contents = content or []
         self.__x = int(x)
         self.__y = int(y)
         self.__width = int(width)
         self.__height = int(height)
         self.parent = parent
+        self._next_content_x = 0
+        self._next_content_y = 0
 
     def getContent(self) -> List[BaseComponent]:
-        return self.__content
+        return self._contents
 
     def clearContent(self) -> BaseComponent:
-        self.__content = []
+        self._contents = []
         return self
 
     def addContents(self, components: List[BaseComponent]) -> BaseComponent:
@@ -95,9 +101,16 @@ class BaseComponent:
         return self
 
     def addContent(self, component: BaseComponent) -> BaseComponent:
-        component.x += self.__x
-        component.y += self.__y
-        self.__content.append(component)
+        component.x += self.x
+        component.x += self._next_content_x
+        component.y += self.y
+        component.y += self._next_content_y
+        self._next_content_y += component.height
+        self._next_content_x = 0
+        self.height += component.height
+        # Purposeless as width hot update isn't supported yet
+        self.width = max(component.width, self.width)
+        self._contents.append(component)
         return self
 
     def updatePosition(self):

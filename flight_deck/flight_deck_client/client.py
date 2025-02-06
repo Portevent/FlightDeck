@@ -6,6 +6,7 @@ from flight_deck.flight_deck_component.impl.button import ButtonComponent
 from flight_deck.flight_deck_component.component import Component
 from flight_deck.flight_deck_component.component_builder import ComponentBuilder
 from flight_deck.flight_deck_component.impl.text import TextComponent
+from flight_deck.flight_deck_component.layout.horizontal import Horizontal
 from flight_deck.flight_deck_display.display import FlightDeckDisplay
 from flight_deck.flight_deck_exceptions.client import DeckFlightAlreadyHasComponentException, \
     DeckFlightGivenIncorrectComponentException
@@ -20,6 +21,7 @@ class FlightDeck(FlightDeckBaseClient):
         self.addComponent(ButtonComponent)
         self.addComponent(Logo)
         self.addComponent(Break)
+        self.addComponent(Horizontal)
 
 
     def addComponent(self, component: Type[Component]):

@@ -20,7 +20,8 @@ class ComponentBuilder:
         return component, [content for content in component.getContent() if isinstance(content, InteractionComponent)]
 
     @staticmethod
-    def __instantiate_element(componentClass: Type[Component], inputs: Dict[str, any], client: FlightDeckBaseClient, **kwargs) -> Component:
+    def __instantiate_element(componentClass: Type[Component], inputs: Dict[str, any], client: FlightDeckBaseClient,
+                              parent: Component | None = None, referent: Component | None = None, elements: List[Element] | None = None, **kwargs) -> Component:
         """
         Instantiate a new component
         :param componentClass: class
@@ -28,30 +29,24 @@ class ComponentBuilder:
         :param client: context
         :return:
         """
-        instance = componentClass(inputs=inputs, client=client, **kwargs)
+        instance = componentClass(inputs=inputs, client=client, parent=parent, **kwargs)
 
-        if componentClass._flight_deck_template is not None:
+        if parent:
+            parent.addContent(instance)
+
+        if componentClass._flight_deck_template:
             for element in componentClass._flight_deck_template:
-                ComponentBuilder.__instantiate_content(instance, element, client)
+                ComponentBuilder.__instantiate_element(componentClass=client.getComponent(element.tag),
+                                                       client=client, parent=instance,
+                                                       elements=list(element), referent=instance,
+                                                       **ComponentBuilder.__parse_attributes(element.attrib, instance))
+        for element in (elements or []):
+            ComponentBuilder.__instantiate_element(componentClass=client.getComponent(element.tag),
+                                                   client=client, parent=instance,
+                                                   elements=list(element), referent=referent,
+                                                   **ComponentBuilder.__parse_attributes(element.attrib, referent))
 
         return instance
-
-    @staticmethod
-    def __instantiate_content(instance: Component, element: Element, client: FlightDeckBaseClient):
-        """
-        Insert a new content in a Component. The new content is instantiated from a Template Element
-        :param instance: Instance to populate
-        :param element: Template to use
-        :param client: Context
-        """
-        instance.addContent(
-            ComponentBuilder.__instantiate_element(
-                componentClass=client.getComponent(element.tag),
-                client=client,
-                parent=instance,
-                **ComponentBuilder.__parse_attributes(element.attrib, instance)
-            )
-        )
 
     @staticmethod
     def __parse_attributes(attributes, page: Component):
