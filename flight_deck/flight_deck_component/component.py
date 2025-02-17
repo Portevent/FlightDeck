@@ -165,11 +165,11 @@ class Component(BaseComponent):
         self._display = display
         return self
 
-    def onInputChange(self, input: str, name: str):
+    def onInputChange(self, input: str, value: str):
         """
         Called when an input is updated
         :param input: Name of updated input
-        :param name: New value
+        :param value: New value
         """
         self.display()
 

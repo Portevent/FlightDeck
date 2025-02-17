@@ -82,3 +82,5 @@ class FlightDeckDom:
 
         else:
             self.selected_component.inputChar(chr(char))
+
+            #TODO : Map key start and end
