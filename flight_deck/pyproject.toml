@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flight-deck"
+version = "0.0.1"
+authors = [
+  { name="Portevent", email="porte@poudriere.be" },
+]
+description = "FlightDeck is a simple framework to display pages over curses or serial port"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.13"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Portevent/FlightDeck"
+Issues = "https://github.com/Portevent/FlightDeck/issues"
