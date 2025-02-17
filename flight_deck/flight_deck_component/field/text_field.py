@@ -1,8 +1,9 @@
-from flight_deck.flight_deck_component.component import Input
+from flight_deck.flight_deck_component.component import Input, ComponentName
 from flight_deck.flight_deck_component.field.field import Field
 
 @Input("insertMode")
 @Input("maxSize")
+@ComponentName("field")
 class TextField(Field):
     """
     Simple text field that user can type value into

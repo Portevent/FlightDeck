@@ -1,7 +1,9 @@
 from typing import override
+from flight_deck.flight_deck_component.component import ComponentName
 
 
 @SetValidChar(chars="0123456789")
+@ComponentName("date")
 class DateField(TextField):
     """
     Simple Date field

@@ -1,13 +1,11 @@
 from typing import List
-
-from flight_deck.elements.element import SetValidChar
-from flight_deck.elements.visual_field import VisualField, HideCursor
+from flight_deck.flight_deck_component.component import Input, ComponentName
 
 
 @SetValidChar("")
-@HideCursor
 @Input("loop")
 @Input("values")
+@ComponentName("options")
 class OptionsField(Field):
     """
     Simple option field, where its value can be selected with left and right keys
