@@ -2,21 +2,46 @@ from flight_deck.flight_deck_component.component import Input
 from flight_deck.flight_deck_component.field.field import Field
 
 @Input("insertMode")
+@Input("maxSize")
 class TextField(Field):
     """
     Simple text field that user can type value into
     """
 
     insertMode: bool
+    _cursorPosition: int = 0
 
     def start(self):
         # Todo : create default values for input
         if self.insertMode is None:
             self.insertMode = False
+        if self.maxSize is None:
+            self.maxSize = 15
+        super().start()
+
+    @property
+    def cursorPosition(self) -> int:
+        return self._cursorPosition
+
+    @cursorPosition.setter
+    def cursorPosition(self, index: int):
+        if index > self.current_size:
+            index = self.current_size
+
+        if index < 0:
+            index = 0
+
+        if self._cursorPosition == index:
+            return
+
+        self._cursorPosition = index
+
+    def getValueMaxSize(self) -> int:
+        return self.maxSize
 
     def inputChar(self, char: str):
         # If we reached max size, we don't add more character
-        if self.max_size and self.current_size >= self.max_size:
+        if self.maxSize and self.current_size >= self.maxSize:
             # Except in insert mode (when we just replace char)
             if not (self.insertMode and self.cursorPosition < self.current_size):
                 return
@@ -25,24 +50,20 @@ class TextField(Field):
         self.cursorPosition += 1
 
     def goLeft(self):
-        if self.cursorPosition > 0:
-            self.cursorPosition -= 1
+        self.cursorPosition -= 1
 
     def goRight(self):
-        if self.cursorPosition < self.current_size:
-            self.cursorPosition += 1
+        self.cursorPosition += 1
 
     def enter(self):
         # TODO : self.page.next()
         pass
 
-    def start(self):
-        if self.cursorPosition > 0:
-            self.cursorPosition = 0
+    def goStart(self):
+        self.cursorPosition = 0
 
-    def end(self):
-        if self.cursorPosition < self.current_size:
-            self.cursorPosition = self.current_size
+    def goEnd(self):
+        self.cursorPosition = self.current_size
 
     def delete(self):
         if self.cursorPosition > 0:
@@ -54,6 +75,10 @@ class TextField(Field):
             self.value = self.value[:self.cursorPosition] + self.value[self.cursorPosition+1:]
             self.cursorPosition += 0
 
-    @property
-    def formatedValue(self) -> str:
-        return str(self.value)
+    def updateValue(self):
+        self.current_size = len(self.value)
+        self.formatedValue = self.textOver(self.value, self.value_fill, self.maxSize)
+        self.displayCursor()
+
+    def displayCursor(self):
+        self._moveCursor((0, self.cursorPosition)) # TODO : Check if x and y are not confused

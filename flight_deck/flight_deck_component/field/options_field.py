@@ -6,17 +6,34 @@ from flight_deck.elements.visual_field import VisualField, HideCursor
 
 @SetValidChar("")
 @HideCursor
-class OptionsField(VisualField):
+@Input("loop")
+@Input("values")
+class OptionsField(Field):
     """
     Simple option field, where its value can be selected with left and right keys
     """
 
     values: List[str]
     values_count: int
-    _index: int
+    _index: int = 0
 
-    loop: bool
+    # "= False" wouldn't work as @Input("loop") will override this. TODO : Default value for Input
+    loop: bool = False
 
+    def start(self):
+        super().start()
+        self.values_count = len(self.values)
+        if self.loop is None: # TODO : Remove when default value for Input work
+            self.loop = False
+
+    def onInputChange(self, input: str, value: str):
+        match input:
+            case "values":
+                self.values_count = len(self.values)
+                self.index = self.index # Check if index still in range
+            case _:
+                super().onInputChange(input, value)
+        
     @property
     def index(self) -> int:
         return self._index
@@ -29,19 +46,11 @@ class OptionsField(VisualField):
         if index < 0:
             index = (self.values_count - 1) if self.loop else 0
 
+        if self._index == index:
+            return
+
         self._index = index
         self.value = self.values[self._index]
-
-    def __init__(self, values: List[str], x: int = 0, y: int = 0, width: int | None = None, height: int | None = None,
-                 name: str = "", label: str | None = None, loop: bool = True, index: int = 0):
-
-        self.loop = loop
-        self.values = values
-        self.values_count = len(self.values)
-        self._index = index
-
-        super().__init__(x, y, width, height, name, label, values[index],
-                         valueBackgroundSize=max(len(x) for x in values) + 4)
 
     def inputChar(self, char: str):
         pass
@@ -55,13 +64,11 @@ class OptionsField(VisualField):
     def enter(self):
         pass
 
-    def start(self):
-        if self.index > 0:
-            self.index = 0
+    def goStart(self):
+        self.index = 0
 
-    def end(self):
-        if self.index < self.values_count - 1:
-            self.index = self.values_count - 1
+    def goEnd(self):
+        self.index = self.values_count - 1
 
     def delete(self):
         pass
@@ -69,9 +76,13 @@ class OptionsField(VisualField):
     def suppr(self):
         pass
 
-    def _generateValueBackground(self, size: int):
-        return " " * size
+    def getValueMaxSize(self) -> int:
+        return max(map(len, self.values))
 
-    @property
-    def formatedValue(self) -> str:
-        return f"{'<' if self.loop or self.index > 0 else ' '} {self.value} {'>' if self.loop or self.index < (self.values_count - 1) else ' '}"
+
+    def updateValue(self):
+        """
+        Update the displayed label
+        """
+        rawFormatedValue = self.textOver(self.value, self.value_fill, self.value_max_size)
+        self.formatedValue = f"{'<' if self.loop or self.index > 0 else ' '} {self.value} {'>' if self.loop or self.index < (self.values_count - 1) else ' '}"

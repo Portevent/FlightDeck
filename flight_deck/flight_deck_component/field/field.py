@@ -83,7 +83,7 @@ class Field(InteractionComponent, ABC):
         if char in self.valid_char:
             self.onInput(char)
 
-    def onInputChange(self, input: str, name: str):
+    def onInputChange(self, input: str, value: str):
         match input:
             case "label":
                 self.updateLabel()
@@ -96,13 +96,16 @@ class Field(InteractionComponent, ABC):
         """
         Update the displayed label
         """
-        self.formatedLabel = self.label + (self.label_fill * LABEL_SIZE)[len(self.label):]
+        self.formatedLabel = self.textOver(self.value, self.label_fill, LABEL_SIZE)
 
     def updateValue(self):
         """
         Update the displayed label
         """
-        self.formatedValue = self.value + (self.value_fill * self.value_max_size)[len(self.value):]
+        self.formatedValue = self.textOver(self.value, self.value_fill, self.value_max_size)
+
+    def textOver(self, text: str, background: str = "_", background_lenght: int = 10) -> str:
+        return text + (background * background_lenght)[len(text):]
 
     def updateSelection(self, selected: bool = False):
         self.formatedSelection = "> " if selected else "  "
@@ -112,3 +115,12 @@ class Field(InteractionComponent, ABC):
 
     def unselect(self):
         self.updateSelection(False)
+
+    def goUp(self):
+        self.previousComponent()
+
+    def goDown(self):
+        self.nextComponent()
+
+    def enter(self):
+        self.nextComponent()
