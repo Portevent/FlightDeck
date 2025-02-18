@@ -73,7 +73,7 @@ class Field(InteractionComponent, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def onInput(self, char: str):
+    def newChar(self, char: str):
         """
         A valid key is pressed
         """
@@ -81,7 +81,7 @@ class Field(InteractionComponent, ABC):
 
     def inputChar(self, char: str):
         if char in self.valid_char:
-            self.onInput(char)
+            self.newChar(char)
 
     def onInputChange(self, input: str, value: str):
         match input:
