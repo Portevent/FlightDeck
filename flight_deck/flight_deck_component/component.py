@@ -173,8 +173,13 @@ class Component(BaseComponent):
         """
         self.display()
 
+    def iterOverChildren(self):
+        for component in self.getContent:
+            yield component
+            component.iterOverChildren()
+
     def searchChildren(self, id: str) -> Component:
-        for component in self.getContent():
+        for component in self.iterOverChildren():
             if component.id == id:
                 return component
 
