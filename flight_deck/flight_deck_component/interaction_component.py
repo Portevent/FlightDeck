@@ -82,16 +82,19 @@ class InteractionComponent(Component, ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
     def select(self):
         """
         Field is being selected
         """
-        raise NotImplementedError
+        self.displayCursor()
 
     @abstractmethod
     def unselect(self):
         """
         Field is being unselected
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    def displayCursor(self):
         raise NotImplementedError

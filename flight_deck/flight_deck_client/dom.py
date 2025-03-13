@@ -5,7 +5,7 @@ from flight_deck.flight_deck_component.base_component import BaseComponent
 
 class FlightDeckDom:
     # Index of the selected field
-    selectedIndex: int = None
+    selectedIndex: int | None = None
 
     topComponent: BaseComponent
 
@@ -19,6 +19,7 @@ class FlightDeckDom:
     def setTopComponent(self, component: BaseComponent, selectableComponents: List[BaseComponent]):
         self.topComponent = component
         self.selectableComponents = selectableComponents
+        self.selectComponent(0)
 
     @property
     def selected_component(self) -> BaseComponent:
@@ -33,7 +34,7 @@ class FlightDeckDom:
         Set the selected component to given index
         :param index: Index of the Component
         """
-        if self.selectedIndex:
+        if self.selectedIndex is not None:
             self.selected_component.unselect()
 
         self.selectedIndex = index

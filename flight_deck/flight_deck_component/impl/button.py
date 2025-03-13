@@ -56,8 +56,8 @@ class ButtonComponent(InteractionComponent):
     def suppr(self):
         pass
 
-    def select(self):
-        pass
-
     def unselect(self):
         pass
+
+    def displayCursor(self):
+        self._moveCursor((0, 0), 0)

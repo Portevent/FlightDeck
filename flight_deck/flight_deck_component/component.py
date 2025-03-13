@@ -9,6 +9,8 @@ from flight_deck.flight_deck_component.base_component import BaseComponent
 from flight_deck.flight_deck_display.color import Color
 from flight_deck.flight_deck_display.display import FlightDeckDisplay
 
+from flight_deck.flight_deck_component.ContentIterator import ContentIterator
+
 
 def Input(name: str):
     """
@@ -158,10 +160,7 @@ class Component(BaseComponent):
         if self._display is None:
             return
 
-        x = max(0, min(self.width, position[0]))
-        y = max(0, min(self.height, position[1]))
-
-        self._display.moveCursor((self.x + x, self.y + y), cursorType=cursorType)
+        self._display.moveCursor((self.x + position[0], self.y + position[1]), cursorType=cursorType)
 
     def setDisplay(self, display: FlightDeckDisplay) -> Component:
         """
@@ -180,9 +179,7 @@ class Component(BaseComponent):
         self.display()
 
     def iterOverChildren(self):
-        for component in self.getContent:
-            yield component
-            component.iterOverChildren()
+        return ContentIterator(self)
 
     def searchChildren(self, id: str) -> Component:
         for component in self.iterOverChildren():

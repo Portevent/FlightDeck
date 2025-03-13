@@ -33,10 +33,8 @@ class TextField(Field):
         if index < 0:
             index = 0
 
-        if self._cursorPosition == index:
-            return
-
         self._cursorPosition = index
+        self.displayCursor()
 
     def getValueMaxSize(self) -> int:
         return self.maxSize
@@ -84,4 +82,5 @@ class TextField(Field):
         self.displayCursor()
 
     def displayCursor(self):
-        self._moveCursor((self.cursorPosition, 0))  # Indeed it was
+        if self.getValueComponent():
+            self.getValueComponent()._moveCursor((self._cursorPosition, 0), 1)

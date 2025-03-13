@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from flight_deck.flight_deck_component.base_component import BaseComponent
 from typing import Type
 
 from flight_deck.flight_deck_component.component import Input, Template, Output
@@ -96,7 +97,7 @@ class Field(InteractionComponent, ABC):
         """
         Update the displayed label
         """
-        self.formatedLabel = self.textOver(self.value, self.label_fill, LABEL_SIZE)
+        self.formatedLabel = self.textOver(self.label, self.label_fill, LABEL_SIZE)
 
     def updateValue(self):
         """
@@ -112,6 +113,7 @@ class Field(InteractionComponent, ABC):
 
     def select(self):
         self.updateSelection(True)
+        super().select()
 
     def unselect(self):
         self.updateSelection(False)
@@ -124,3 +126,6 @@ class Field(InteractionComponent, ABC):
 
     def enter(self):
         self.nextComponent()
+
+    def getValueComponent(self) -> BaseComponent:
+        return self.searchChildren("value")
