@@ -43,10 +43,10 @@ class ButtonComponent(InteractionComponent):
     def enter(self):
         self.__onclick()
 
-    def start(self):
+    def goStart(self):
         pass
 
-    def end(self):
+    def goEnd(self):
         pass
 
     def delete(self):

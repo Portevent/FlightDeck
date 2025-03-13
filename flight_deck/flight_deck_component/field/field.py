@@ -1,16 +1,38 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
+from typing import Type
 
-from flight_deck.flight_deck_component.component import Input, Template
-from flight_deck.flight_deck_component.impl.text import TextComponent
+from flight_deck.flight_deck_component.component import Input, Template, Output
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
+
+LABEL_SIZE = 10
+
+def SetValidChar(chars: str):
+    """
+    Change the valid char that can be inputted into a field
+    """
+    def updateValidChars(cls: Type[Field]):
+        cls.valid_char = chars
+        return cls
+
+    return updateValidChars
 
 @Input("name")
 @Input("label")
 @Input("value")
-@Template("""<Template>
-<text id="label" x=0 y=0 text='@formatedLabel'/><text id="value" x=10 y=0 text='@formatedValue'/>
-</Template>""")
-class Field(InteractionComponent):
+@Output("formatedSelection")
+@Output("formatedLabel")
+@Output("formatedValue")
+@Template(f"""
+<Template>
+    <horizontal>
+        <text id="label" text='#formatedSelection'/>
+        <text id="label" _width="{LABEL_SIZE}" text='#formatedLabel'/>
+        <text text='  '/>
+        <text id="value" text='#formatedValue'/>
+    </horizontal>
+</Template>
+""")
+class Field(InteractionComponent, ABC):
     """
     Component that has an instance name, a label and a value
     Note : Do not confuse Component's name with Field's name. Component's name is "Field", Field's name is whatever
@@ -19,44 +41,86 @@ class Field(InteractionComponent):
     name : "age", label : "Age", value: 25
     """
 
+    valid_char = "abcdefghtijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,?;.:/|\\!*$^¨`_-=+'\"{}()[]°@&~éèàç"
+
     current_size: int = 0  # Size of the current value
 
+    name: str
+    label: str
+    value: str
 
-    def onInputChange(self, input: str, name: str):
+    formatedSelection: str
+    formatedLabel: str
+    formatedValue: str
+
+    label_fill = "."
+    value_fill = "."
+    value_max_size: int
+
+    def start(self):
+        self.updateSelection()
+        self.updateLabel()
+        self.updateValue()
+
+        self.value_max_size = self.getValueMaxSize()
+
+    @abstractmethod
+    def getValueMaxSize(self) -> int:
+        """
+        Determine the max size of the value, so it can be filled with that many "self.value_fill" characters
+        :return:
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def newChar(self, char: str):
+        """
+        A valid key is pressed
+        """
+        raise NotImplementedError
+
+    def inputChar(self, char: str):
+        if char in self.valid_char:
+            self.newChar(char)
+
+    def onInputChange(self, input: str, value: str):
         match input:
             case "label":
-                self.displayLabel()
+                self.updateLabel()
             case "value":
-                self.displayValue()
+                self.updateValue()
             case _:
                 self.display()
 
-    @property
-    def labelComponent(self) -> TextComponent:
-        return self.searchChildren("label")
+    def updateLabel(self):
+        """
+        Update the displayed label
+        """
+        self.formatedLabel = self.textOver(self.value, self.label_fill, LABEL_SIZE)
 
-    @property
-    def valueComponent(self) -> TextComponent:
-        return self.searchChildren("value")
+    def updateValue(self):
+        """
+        Update the displayed label
+        """
+        self.formatedValue = self.textOver(self.value, self.value_fill, self.value_max_size)
 
-    def displayAfterContent(self):
-        self.displayLabel()
-        self.displayValue()
+    def textOver(self, text: str, background: str = "_", background_lenght: int = 10) -> str:
+        return text + (background * background_lenght)[len(text):]
 
-    @abstractmethod
-    def displayLabel(self):
-        raise NotImplementedError
+    def updateSelection(self, selected: bool = False):
+        self.formatedSelection = "> " if selected else "  "
 
-    @abstractmethod
-    def displayValue(self):
-        raise NotImplementedError
+    def select(self):
+        self.updateSelection(True)
 
-    @property
-    @abstractmethod
-    def formatedLabel(self) -> str:
-        raise NotImplementedError
+    def unselect(self):
+        self.updateSelection(False)
 
-    @property
-    @abstractmethod
-    def formatedValue(self) -> str:
-        raise NotImplementedError
+    def goUp(self):
+        self.previousComponent()
+
+    def goDown(self):
+        self.nextComponent()
+
+    def enter(self):
+        self.nextComponent()

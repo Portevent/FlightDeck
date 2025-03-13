@@ -55,14 +55,14 @@ class InteractionComponent(Component, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def start(self):
+    def goStart(self):
         """
         Start key is inputted in the field
         """
         raise NotImplementedError
 
     @abstractmethod
-    def end(self):
+    def goEnd(self):
         """
         End key is inputted in the field
         """
