@@ -1,7 +1,6 @@
 from typing import Callable
 
-
-from flight_deck.flight_deck_component.component import Template, Component, Input, ComponentName
+from flight_deck.flight_deck_component.component import Template, Input, ComponentName
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
 
 
@@ -14,7 +13,9 @@ from flight_deck.flight_deck_component.interaction_component import InteractionC
 </Template>
 """)
 class ButtonComponent(InteractionComponent):
-
+    """
+    Simple Button Component
+    """
     text: str
     onClick: Callable
 

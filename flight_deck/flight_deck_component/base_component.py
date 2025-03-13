@@ -2,9 +2,13 @@ from __future__ import annotations
 
 from typing import List
 
+from flight_deck.flight_deck_component.xy_component import XyComponent
 
-class BaseComponent:
 
+class BaseComponent(XyComponent):
+    """
+    Base Component Class
+    """
     _contents: List[BaseComponent] = []
 
     # Position within component to place next component
@@ -13,94 +17,52 @@ class BaseComponent:
 
     parent: BaseComponent | None = None
 
-    __width: int
+    _width: int
 
-    @property
-    def width(self) -> int:
-        return self.__width
+    _height: int
 
-    @width.setter
-    def width(self, value: int):
-        if self.width == value:
-            return
+    _x: int
 
-        self.__width = value
+    _y: int
 
-        if self.parent:
-            self.parent.updatePosition()
-
-    __height: int
-
-    @property
-    def height(self) -> int:
-        return self.__height
-
-    @height.setter
-    def height(self, value: int):
-        if self.height == value:
-            return
-
-        self.__height = value
-
-        if self.parent:
-            self.parent.updatePosition()
-
-    __x: int
-
-    @property
-    def x(self) -> int:
-        return self.__x
-
-    @x.setter
-    def x(self, value: int):
-        if self.x == value:
-            return
-
-        self.__x = value
-
-        if self.parent:
-            self.parent.updatePosition()
-
-    __y: int
-    
-    @property
-    def y(self) -> int:
-        return self.__y
-    
-    @y.setter
-    def y(self, value: int):
-        if self.y == value:
-            return
-        
-        self.__y = value
-        
-        if self.parent:
-            self.parent.updatePosition()
-
-    def __init__(self, content: List[BaseComponent] | None = None, x: int = 0, y: int = 0, width: int = 0, height: int = 1, parent: BaseComponent | None = None):
+    def __init__(self, content: List[BaseComponent] | None = None,
+                 x: int = 0, y: int = 0, width: int = 0,
+                 height: int = 1, parent: BaseComponent | None = None):
+        super().__init__(x, y, width, height, parent)
         self._contents = content or []
-        self.__x = int(x)
-        self.__y = int(y)
-        self.__width = int(width)
-        self.__height = int(height)
-        self.parent = parent
         self._next_content_x = 0
         self._next_content_y = 0
 
     def getContent(self) -> List[BaseComponent]:
+        """
+        Get all content
+        :return: List of Components
+        """
         return self._contents
 
     def clearContent(self) -> BaseComponent:
+        """
+        Remove all content from this component
+        :return: Self
+        """
         self._contents = []
         return self
 
     def addContents(self, components: List[BaseComponent]) -> BaseComponent:
+        """
+        Add Components after the other content
+        :param component: New children
+        """
         for component in components:
             self.addContent(component)
 
         return self
 
     def addContent(self, component: BaseComponent) -> BaseComponent:
+        """
+        Add Component after the other content
+        :param component: New child
+        """
         component.x += self.x
         component.x += self._next_content_x
         component.y += self.y
@@ -117,13 +79,23 @@ class BaseComponent:
         self.display()
 
     def display(self):
+        """
+        Display the component
+        :return:
+        """
         self.displayBeforeContent()
         for content in self.getContent():
             content.display()
         self.displayAfterContent()
 
     def displayBeforeContent(self):
+        """
+        Display something before displaying the childs content
+        """
         pass
 
     def displayAfterContent(self):
+        """
+        Display something after displaying the childs content
+        """
         pass

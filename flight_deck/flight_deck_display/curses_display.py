@@ -68,7 +68,7 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
         if refresh:
             self._refresh()
 
-    def moveCursor(self, position: Position, refresh: bool = True):
+    def moveCursor(self, position: Position, cursorType = None, refresh: bool = True):
         """
         Move cursor
         :param x: x position
@@ -92,6 +92,7 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
         curses.echo()
         self.stdscr.keypad(False)
         curses.endwin()
+        exit()
 
     def start_listening(self, onkey: Callable):
         """

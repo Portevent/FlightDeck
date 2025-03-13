@@ -4,9 +4,13 @@ from typing import Dict, Type
 from flight_deck.flight_deck_client.dom import FlightDeckDom
 from flight_deck.flight_deck_component.base_component import BaseComponent
 from flight_deck.flight_deck_display.display import FlightDeckDisplay
+from flight_deck.flight_deck_exceptions.client import FlightDeckException
 
 
 class FlightDeckBaseClient:
+    """
+    Base client
+    """
     display: FlightDeckDisplay | None
 
     routes: Dict[str, Type[BaseComponent]]
@@ -21,14 +25,19 @@ class FlightDeckBaseClient:
         self.dom = FlightDeckDom()
 
     def getComponent(self, name: str) -> Type[BaseComponent]:
+        """
+        Get component by name
+        :param name: Component name
+        :return: BaseComponent
+        """
         if not name in self.components:
-            raise Exception(f"FlightDeck doesn't know component {name}")
+            raise FlightDeckException(f"FlightDeck doesn't know component {name}")
 
         return self.components[name]
 
     def __enter__(self):
         if self.display is None:
-            raise Exception("Entering Client without specifying a display")
+            raise FlightDeckException("Entering Client without specifying a display")
 
         self.display.__enter__()
         return self
@@ -47,12 +56,24 @@ class FlightDeckBaseClient:
 
     @abstractmethod
     def start(self, defaultPage: str | None = None):
+        """
+        Start the client
+        :param defaultPage: Optional default component on launch
+        """
         raise NotImplementedError
 
     @abstractmethod
     def onkey(self, key: str):
+        """
+        Called when a key is pressed
+        :param key: Keycode
+        """
         raise NotImplementedError
 
     @abstractmethod
     def navigateTo(self, name: str):
+        """
+        Navigate to component
+        :param name: Component name
+        """
         raise NotImplementedError

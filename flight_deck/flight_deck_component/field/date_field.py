@@ -1,5 +1,7 @@
 from typing import override
 from flight_deck.flight_deck_component.component import ComponentName
+from flight_deck.flight_deck_component.field import TextField
+from flight_deck.flight_deck_component.field.field import SetValidChar
 
 
 @SetValidChar(chars="0123456789")
@@ -19,9 +21,10 @@ class DateField(TextField):
 
     def updateValue(self):
         self.current_size = len(self.value)
-        self.formatedValue =  f"{TextFormater.override(str(self.value)[0:2], '  ')}.
-                                {TextFormater.override(str(self.value)[2:4], '  ')}.
-                                {TextFormater.override(str(self.value)[4:8], '    ')}"
+        self.formatedValue =  f"{self.value[0:2]}.{self.value[2:4]}.{self.value[4:8]}"
+        # self.formatedValue =  f"{TextFormater.override(str(self.value)[0:2], '  ')}.\
+        #                         {TextFormater.override(str(self.value)[2:4], '  ')}.\
+        #                         {TextFormater.override(str(self.value)[4:8], '    ')}"
         self.displayCursor()
 
     def displayCursor(self):

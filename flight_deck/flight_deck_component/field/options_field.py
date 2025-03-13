@@ -1,5 +1,7 @@
 from typing import List
 from flight_deck.flight_deck_component.component import Input, ComponentName
+from flight_deck.flight_deck_component.field import Field
+from flight_deck.flight_deck_component.field.field import SetValidChar
 
 
 @SetValidChar("")

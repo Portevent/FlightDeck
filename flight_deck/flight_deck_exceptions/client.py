@@ -1,10 +1,10 @@
-class DeckFlightException(Exception):
+class FlightDeckException(Exception):
     pass
 
 
-class DeckFlightGivenIncorrectComponentException(DeckFlightException):
+class FlightDeckGivenIncorrectComponentException(FlightDeckException):
     pass
 
 
-class DeckFlightAlreadyHasComponentException(DeckFlightException):
+class FlightDeckAlreadyHasComponentException(FlightDeckException):
     pass
