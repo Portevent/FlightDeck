@@ -10,7 +10,7 @@ class TextComponent(Component):
     def start(self):
         lines = self.text.split("\n")
         self.height = len(lines)
-        self.width = max(map(len, lines))
+        self.width = int(self._inputs.get("width") or max(map(len, lines)))
 
-    def displayAfterContent(self):
+    def display_after_content(self):
         self._displayText(self.text, (0,0))

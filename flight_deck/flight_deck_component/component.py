@@ -9,6 +9,9 @@ from flight_deck.flight_deck_component.base_component import BaseComponent
 from flight_deck.flight_deck_display.color import Color
 from flight_deck.flight_deck_display.display import FlightDeckDisplay
 
+from flight_deck.flight_deck_component.ContentIterator import ContentIterator
+
+
 def Input(name: str):
     """
     Add Input to a component
@@ -16,9 +19,8 @@ def Input(name: str):
     """
 
     def addProperty(cls: Type[Component]):
-
         def getInput(self):
-            return self._inputs[name]
+            return self._inputs.get(name, "")
 
         def setInput(self, value):
             if self._inputs.get(name) == value:
@@ -30,6 +32,7 @@ def Input(name: str):
 
     return addProperty
 
+
 def Output(name: str):
     """
     Add Output to a component
@@ -37,7 +40,6 @@ def Output(name: str):
     """
 
     def addProperty(cls: Type[Component]):
-
         def getOutput(self):
             return self._outputs[name]
 
@@ -67,12 +69,12 @@ def Template(template: str):
 
 
 def ComponentName(name: str):
-
     def setName(cls: Type[Component]):
         cls._flight_deck_component_name = name
         return cls
 
     return setName
+
 
 @Input("id")
 class Component(BaseComponent):
@@ -90,7 +92,8 @@ class Component(BaseComponent):
 
     id: str
 
-    def __init__(self, client: FlightDeckBaseClient, inputs: Dict[str, any] | None = None, binds: List[Tuple[Component, str, str]] | None = None, **kwargs):
+    def __init__(self, client: FlightDeckBaseClient, inputs: Dict[str, any] | None = None,
+                 binds: List[Tuple[Component, str, str]] | None = None, **kwargs):
         super().__init__(**kwargs)
         self.client = client
         self._display = client.display
@@ -101,12 +104,17 @@ class Component(BaseComponent):
             for page, input, bind in binds:
                 def updateInput(value):
                     self.updateInput(input, value)
+
                 page.addOutputListener(bind, updateInput)
 
         self.start()
 
     def start(self):
         pass
+
+    @classmethod
+    def getComponentName(cls) -> str:
+        return cls._flight_deck_component_name
 
     def addOutputListener(self, output: str, callable: Callable):
         if output not in self._outputsObersvers:
@@ -122,7 +130,7 @@ class Component(BaseComponent):
         self._inputs[input] = value
         self.onInputChange(input, value)
 
-    def _displayText(self, text: List[str] | str, position: Tuple[int, int] = (0,0), color: Color = Color.CLASSIC):
+    def _displayText(self, text: List[str] | str, position: Tuple[int, int] = (0, 0), color: Color = Color.CLASSIC):
         """
         Display text within the bounds of the component
         :param text: String to display (or multiple lines)
@@ -152,10 +160,7 @@ class Component(BaseComponent):
         if self._display is None:
             return
 
-        x = max(0, min(self.width, position[0]))
-        y = max(0, min(self.height, position[1]))
-
-        self._display.moveCursor((self.x + x, self.y + y), cursorType=cursorType)
+        self._display.moveCursor((self.x + position[0], self.y + position[1]), cursorType=cursorType)
 
     def setDisplay(self, display: FlightDeckDisplay) -> Component:
         """
@@ -174,9 +179,7 @@ class Component(BaseComponent):
         self.display()
 
     def iterOverChildren(self):
-        for component in self.getContent:
-            yield component
-            component.iterOverChildren()
+        return ContentIterator(self)
 
     def searchChildren(self, id: str) -> Component:
         for component in self.iterOverChildren():

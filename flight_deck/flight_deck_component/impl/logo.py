@@ -10,7 +10,7 @@ class Logo(Component):
     def __init__(self, **kwargs):
         super().__init__(height=3, width=6, **kwargs)
 
-    def displayAfterContent(self):
+    def display_after_content(self):
         self._displayText(["//--\\\\",
                            "||  ||",
                            "\\\\__//"])

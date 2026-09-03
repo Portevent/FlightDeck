@@ -8,7 +8,7 @@ class Horizontal(Component):
     Display element horizontally.
     """
 
-    def addContent(self, component: BaseComponent) -> BaseComponent:
+    def add_content(self, component: BaseComponent) -> BaseComponent:
         component.x += self.x
         component.x += self._next_content_x
         component.y += self.y

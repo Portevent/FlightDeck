@@ -1,5 +1,6 @@
 from enum import IntEnum, auto
 
+
 class Color(IntEnum):
     CLASSIC = auto()
     PROMPT = auto()

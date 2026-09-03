@@ -2,6 +2,7 @@ from typing import Type, Dict, Tuple, List
 from xml.etree.ElementTree import Element
 
 from flight_deck.flight_deck_client.base_client import FlightDeckBaseClient
+from flight_deck.flight_deck_component.base_component import BaseComponent
 from flight_deck.flight_deck_component.component import Component
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
 
@@ -9,7 +10,7 @@ from flight_deck.flight_deck_component.interaction_component import InteractionC
 class ComponentBuilder:
 
     @staticmethod
-    def instantiate(componentClass: Type[Component], client: FlightDeckBaseClient) -> Tuple[Component, List[Component]]:
+    def instantiate(componentClass: Type[BaseComponent], client: FlightDeckBaseClient) -> Tuple[BaseComponent, List[BaseComponent]]:
         """
         Instantiate a component and return all selectionnable sub components
         :param component:
@@ -17,10 +18,10 @@ class ComponentBuilder:
         :return:
         """
         component = ComponentBuilder.__instantiate_element(componentClass, {}, client)
-        return component, [content for content in component.getContent() if isinstance(content, InteractionComponent)]
+        return component, [content for content in component.get_content() if isinstance(content, InteractionComponent)]
 
     @staticmethod
-    def __instantiate_element(componentClass: Type[Component], inputs: Dict[str, any], client: FlightDeckBaseClient,
+    def __instantiate_element(componentClass: Type[BaseComponent], inputs: Dict[str, any], client: FlightDeckBaseClient,
                               parent: Component | None = None, referent: Component | None = None, elements: List[Element] | None = None, **kwargs) -> Component:
         """
         Instantiate a new component
@@ -32,16 +33,16 @@ class ComponentBuilder:
         instance = componentClass(inputs=inputs, client=client, parent=parent, **kwargs)
 
         if parent:
-            parent.addContent(instance)
+            parent.add_content(instance)
 
         if componentClass._flight_deck_template:
             for element in componentClass._flight_deck_template:
-                ComponentBuilder.__instantiate_element(componentClass=client.getComponent(element.tag),
+                ComponentBuilder.__instantiate_element(componentClass=client.get_component(element.tag),
                                                        client=client, parent=instance,
                                                        elements=list(element), referent=instance,
                                                        **ComponentBuilder.__parse_attributes(element.attrib, instance))
         for element in (elements or []):
-            ComponentBuilder.__instantiate_element(componentClass=client.getComponent(element.tag),
+            ComponentBuilder.__instantiate_element(componentClass=client.get_component(element.tag),
                                                    client=client, parent=instance,
                                                    elements=list(element), referent=referent,
                                                    **ComponentBuilder.__parse_attributes(element.attrib, referent))

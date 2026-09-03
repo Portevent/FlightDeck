@@ -6,10 +6,10 @@ from flight_deck.flight_deck_component.component import Component
 class InteractionComponent(Component, ABC):
 
     def previousComponent(self):
-        self.client.dom.previousComponent()
+        self.client.dom.previous_component()
 
     def nextComponent(self):
-        self.client.dom.nextComponent()
+        self.client.dom.next_component()
 
     @abstractmethod
     def inputChar(self, char: str):
@@ -82,16 +82,19 @@ class InteractionComponent(Component, ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
     def select(self):
         """
         Field is being selected
         """
-        raise NotImplementedError
+        self.displayCursor()
 
     @abstractmethod
     def unselect(self):
         """
         Field is being unselected
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    def displayCursor(self):
         raise NotImplementedError

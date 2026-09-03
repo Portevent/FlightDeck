@@ -13,7 +13,7 @@ class PageBuilder:
 
     @staticmethod
     def __instantiate_element(page: BaseComponent, element: Element, client: FlightDeckBaseClient):
-        return client.getComponent(element.tag)(
+        return client.get_component(element.tag)(
             content=
                  [PageBuilder.__instantiate_element(page, child, client) for child in element]
                  + ([element.text] if element.text.strip() else []),

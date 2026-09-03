@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from flight_deck.flight_deck_component.base_component import BaseComponent
 from typing import Type
 
 from flight_deck.flight_deck_component.component import Input, Template, Output
@@ -26,9 +27,9 @@ def SetValidChar(chars: str):
 <Template>
     <horizontal>
         <text id="label" text='#formatedSelection'/>
-        <text id="label" _width="{LABEL_SIZE}" text='#formatedLabel'/>
+        <text id="label" width="{LABEL_SIZE}" text='#formatedLabel'/>
         <text text='  '/>
-        <text id="value" text='#formatedValue'/>
+        <text id="value" width="#value_max_size" text='#formatedValue'/>
     </horizontal>
 </Template>
 """)
@@ -41,7 +42,7 @@ class Field(InteractionComponent, ABC):
     name : "age", label : "Age", value: 25
     """
 
-    valid_char = "abcdefghtijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,?;.:/|\\!*$^¨`_-=+'\"{}()[]°@&~éèàç"
+    valid_char = "abcdefghtijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,?;.:/|\\!*$^¨`_-=+'\"{}()[]°@&~éèàç0123456789 "
 
     current_size: int = 0  # Size of the current value
 
@@ -58,11 +59,12 @@ class Field(InteractionComponent, ABC):
     value_max_size: int
 
     def start(self):
+
+        self.value_max_size = self.getValueMaxSize()
         self.updateSelection()
         self.updateLabel()
         self.updateValue()
 
-        self.value_max_size = self.getValueMaxSize()
 
     @abstractmethod
     def getValueMaxSize(self) -> int:
@@ -96,7 +98,7 @@ class Field(InteractionComponent, ABC):
         """
         Update the displayed label
         """
-        self.formatedLabel = self.textOver(self.value, self.label_fill, LABEL_SIZE)
+        self.formatedLabel = self.textOver(self.label, self.label_fill, LABEL_SIZE)
 
     def updateValue(self):
         """
@@ -112,6 +114,7 @@ class Field(InteractionComponent, ABC):
 
     def select(self):
         self.updateSelection(True)
+        super().select()
 
     def unselect(self):
         self.updateSelection(False)
@@ -124,3 +127,6 @@ class Field(InteractionComponent, ABC):
 
     def enter(self):
         self.nextComponent()
+
+    def getValueComponent(self) -> BaseComponent:
+        return self.searchChildren("value")

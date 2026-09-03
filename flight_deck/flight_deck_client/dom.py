@@ -2,51 +2,49 @@ import curses
 from typing import List
 
 from flight_deck.flight_deck_component.base_component import BaseComponent
+from flight_deck.flight_deck_component.interaction_component import InteractionComponent
+
 
 class FlightDeckDom:
     # Index of the selected field
-    selectedIndex: int = None
+    selectedIndex: int | None = None
+    selected_component: InteractionComponent | None = None
 
-    topComponent: BaseComponent
+    topComponent: BaseComponent | None = None
 
-    selectableComponents: List[BaseComponent]
+    selectableComponents: List[InteractionComponent]
 
     def __init__(self):
         self.topComponent = None
         self.selectableComponents = []
         self.selectedIndex = 0
 
-    def setTopComponent(self, component: BaseComponent, selectableComponents: List[BaseComponent]):
+    def set_top_component(self, component: BaseComponent, selectable_components: List[InteractionComponent]):
         self.topComponent = component
-        self.selectableComponents = selectableComponents
+        self.selectableComponents = selectable_components
+        self.select_component(0)
 
-    @property
-    def selected_component(self) -> BaseComponent:
-        """
-        Returns the selected Component
-        :return: Component
-        """
-        return self.selectableComponents[self.selectedIndex]
-
-    def selectComponent(self, index: int):
+    def select_component(self, index: int):
         """
         Set the selected component to given index
         :param index: Index of the Component
         """
-        if self.selectedIndex:
+        if self.selected_component is not None:
             self.selected_component.unselect()
 
         self.selectedIndex = index
+        self.selected_component = self.selectableComponents[index]
         self.selected_component.select()
 
-    def nextComponent(self):
+    def next_component(self):
         if self.selectedIndex < len(self.selectableComponents) - 1:
-            self.selectComponent(self.selectedIndex + 1)
+            self.select_component(self.selectedIndex + 1)
 
-    def previousComponent(self):
+    def previous_component(self):
         if self.selectedIndex > 0:
-            self.selectComponent(self.selectedIndex - 1)
+            self.select_component(self.selectedIndex - 1)
 
+    # TODO : Should not use curses but rather Display agnostic values
     def onkey(self, char: int):
         if self.selectedIndex is None:
             return
@@ -61,10 +59,10 @@ class FlightDeckDom:
             self.selected_component.goRight()
 
         elif char == curses.KEY_UP:
-            self.previousComponent()
+            self.previous_component()
 
         elif char == curses.KEY_DOWN:
-            self.nextComponent()
+            self.next_component()
 
         elif char == curses.KEY_SR:  # Scroll ?up?
             pass

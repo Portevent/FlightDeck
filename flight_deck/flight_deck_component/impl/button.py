@@ -1,7 +1,6 @@
 from typing import Callable
 
-
-from flight_deck.flight_deck_component.component import Template, Component, Input, ComponentName
+from flight_deck.flight_deck_component.component import Template, Input, ComponentName
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
 
 
@@ -14,7 +13,9 @@ from flight_deck.flight_deck_component.interaction_component import InteractionC
 </Template>
 """)
 class ButtonComponent(InteractionComponent):
-
+    """
+    Simple Button Component
+    """
     text: str
     onClick: Callable
 
@@ -35,10 +36,10 @@ class ButtonComponent(InteractionComponent):
         pass
 
     def goUp(self):
-        self.client.dom.previousComponent()
+        self.client.dom.previous_component()
 
     def goDown(self):
-        self.client.dom.nextComponent()
+        self.client.dom.next_component()
 
     def enter(self):
         self.__onclick()
@@ -55,8 +56,8 @@ class ButtonComponent(InteractionComponent):
     def suppr(self):
         pass
 
-    def select(self):
-        pass
-
     def unselect(self):
         pass
+
+    def displayCursor(self):
+        self._moveCursor((0, 0), 0)

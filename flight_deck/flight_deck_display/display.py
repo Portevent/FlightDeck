@@ -49,3 +49,10 @@ class FlightDeckDisplay(ABC):
         :param onkey: callback
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def clear(self):
+        """
+        Clear screen
+        """
+        raise NotImplementedError
