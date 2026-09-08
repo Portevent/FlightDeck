@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from flight_deck.flight_deck_component.base_component import BaseComponent
 from typing import Type
 
-from flight_deck.flight_deck_component.component import Input, Template, Output
+from flight_deck.flight_deck_component.component import Input, Template, Output, Component
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
 
 LABEL_SIZE = 10
@@ -128,5 +127,5 @@ class Field(InteractionComponent, ABC):
     def enter(self):
         self.nextComponent()
 
-    def getValueComponent(self) -> BaseComponent:
+    def get_value_component(self) -> Component:
         return self.searchChildren("value")

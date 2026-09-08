@@ -60,6 +60,7 @@ class FlightDeck(FlightDeckBaseClient):
         self.display.clear()
         self.dom.set_top_component(*ComponentBuilder.instantiate(self.routes[name], self))
         self.dom.topComponent.display()
+        self.dom.select_component(0)
 
     def start(self, default_page: str | None = None):
         if default_page:

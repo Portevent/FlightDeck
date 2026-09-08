@@ -8,7 +8,7 @@ Position = Tuple[int, int]
 class FlightDeckDisplay(ABC):
 
     @abstractmethod
-    def displayText(self, text: str, position: Position, color: Color):
+    def displayText(self, text: str, position: Position, color: Color | int):
         """
         Display text at position, with given color
         :param text:

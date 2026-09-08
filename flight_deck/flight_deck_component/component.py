@@ -130,7 +130,7 @@ class Component(BaseComponent):
         self._inputs[input] = value
         self.onInputChange(input, value)
 
-    def _displayText(self, text: List[str] | str, position: Tuple[int, int] = (0, 0), color: Color = Color.CLASSIC):
+    def _displayText(self, text: List[str] | str, position: Tuple[int, int] = (0, 0), color: Color | int = Color.CLASSIC):
         """
         Display text within the bounds of the component
         :param text: String to display (or multiple lines)
@@ -151,7 +151,7 @@ class Component(BaseComponent):
                     continue
                 self._display.displayText(char, (self.x + x, self.y + y), color=color)
 
-    def _moveCursor(self, position: Tuple[int, int], cursorType: int | None = None):
+    def move_cursor(self, position: Tuple[int, int], cursorType: int | None = None):
         """
         Move the cursor
         :param position:

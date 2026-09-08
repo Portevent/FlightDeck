@@ -82,5 +82,5 @@ class TextField(Field):
         self.displayCursor()
 
     def displayCursor(self):
-        if self.getValueComponent():
-            self.getValueComponent()._moveCursor((self._cursorPosition, 0), 1)
+        if self.get_value_component():
+            self.get_value_component().move_cursor((self._cursorPosition, 0), 1)

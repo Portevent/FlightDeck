@@ -48,8 +48,8 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
                                 Color.LOG: curses.A_ITALIC}
 
         self.stdscr.keypad(True)
-        self.stdscr.leaveok(True)
-        curses.curs_set(1)
+        self.stdscr.leaveok(False)
+        curses.curs_set(2)
         self.width = curses.COLS
         self.height = curses.LINES
         self.listening = False
@@ -78,7 +78,7 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
         if cursorType is not None:
             curses.curs_set(cursorType)
 
-        curses.setsyx(position[1], position[0])
+        self.input_windows.move(position[1], position[0])
 
         if refresh:
             self._refresh()

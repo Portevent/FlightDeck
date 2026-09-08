@@ -27,4 +27,4 @@ class DateField(TextField):
         self.displayCursor()
 
     def displayCursor(self):
-        self._moveCursor((0, self.cursorPosition + 2 if self.cursorPosition > 4 else (1 if self.cursorPosition > 2 else 0))) # TODO : Check if x and y are not confused
+        self.move_cursor((0, self.cursorPosition + 2 if self.cursorPosition > 4 else (1 if self.cursorPosition > 2 else 0))) # TODO : Check if x and y are not confused

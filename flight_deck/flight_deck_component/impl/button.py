@@ -60,4 +60,4 @@ class ButtonComponent(InteractionComponent):
         pass
 
     def displayCursor(self):
-        self._moveCursor((0, 0), 0)
+        self.move_cursor((0, 0), 1)
