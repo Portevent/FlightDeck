@@ -116,6 +116,7 @@ class Field(InteractionComponent, ABC):
         super().select()
 
     def unselect(self):
+        super().unselect()
         self.updateSelection(False)
 
     def goUp(self):

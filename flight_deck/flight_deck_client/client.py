@@ -57,8 +57,8 @@ class FlightDeck(FlightDeckBaseClient):
         self.routes[name] = page
 
     def navigate_to(self, name: str):
-        self.display.clear()
         self.dom.set_top_component(*ComponentBuilder.instantiate(self.routes[name], self))
+        self.display.clear()
         self.dom.topComponent.display()
         self.dom.select_component(0)
 

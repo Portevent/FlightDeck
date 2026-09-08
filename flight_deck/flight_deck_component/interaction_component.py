@@ -5,6 +5,8 @@ from flight_deck.flight_deck_component.component import Component
 
 class InteractionComponent(Component, ABC):
 
+    selected: bool = False
+
     def previousComponent(self):
         self.client.dom.previous_component()
 
@@ -86,14 +88,14 @@ class InteractionComponent(Component, ABC):
         """
         Field is being selected
         """
+        self.selected = True
         self.displayCursor()
 
-    @abstractmethod
     def unselect(self):
         """
         Field is being unselected
         """
-        raise NotImplementedError
+        self.selected = False
 
     @abstractmethod
     def displayCursor(self):

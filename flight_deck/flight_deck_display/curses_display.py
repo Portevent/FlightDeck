@@ -36,6 +36,7 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
             curses.start_color()
             curses.use_default_colors()
             curses.init_pair(Color.CLASSIC, curses.COLOR_WHITE, -1)
+            curses.init_pair(Color.SELECTED, curses.COLOR_BLACK, curses.COLOR_WHITE)
             curses.init_pair(Color.PROMPT, curses.COLOR_BLUE, -1)
             curses.init_pair(Color.SUCCESS, curses.COLOR_GREEN, -1)
             curses.init_pair(Color.ERROR, curses.COLOR_RED, -1)

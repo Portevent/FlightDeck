@@ -1,15 +1,17 @@
 from typing import Callable
 
-from flight_deck.flight_deck_component.component import Template, Input, ComponentName
+from flight_deck.flight_deck_component.component import Template, Input, ComponentName, Output
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
+from flight_deck.flight_deck_display.color import Color
 
 
 @ComponentName("button")
 @Input("text")
 @Input("onClick")
+@Output("buttonColor")
 @Template("""
 <Template>
-    <text text="@formatted_text"/>
+    <text text="@formatted_text" color="#buttonColor"/>
 </Template>
 """)
 class ButtonComponent(InteractionComponent):
@@ -18,10 +20,15 @@ class ButtonComponent(InteractionComponent):
     """
     text: str
     onClick: Callable
+    buttonColor: Color
+
+    def start(self):
+        self.buttonColor = Color.CLASSIC
 
     @property
     def formatted_text(self):
         return f"[{self.text}]"
+
 
     def __onclick(self):
         self.onClick()
@@ -56,8 +63,13 @@ class ButtonComponent(InteractionComponent):
     def suppr(self):
         pass
 
-    def unselect(self):
-        pass
-
     def displayCursor(self):
-        self.move_cursor((0, 0), 1)
+        self.move_cursor((0, 0), 0)
+
+    def select(self):
+        super().select()
+        self.buttonColor = Color.SELECTED
+
+    def unselect(self):
+        super().unselect()
+        self.buttonColor = Color.CLASSIC
