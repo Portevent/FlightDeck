@@ -146,10 +146,7 @@ class Component(BaseComponent):
             if y >= self.height or y < 0:
                 continue
 
-            for x, char in enumerate(line, start=position[0]):
-                if x >= self.width or x < 0:
-                    continue
-                self._display.displayText(char, (self.x + x, self.y + y), color=color)
+            self._display.displayText(line[:self.width], (self.x, self.y + y), color=color)
 
     def move_cursor(self, position: Tuple[int, int], cursorType: int | None = None):
         """

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 
+REFRESH_PARENT = False # TODO : Find a cleaner way to update parent only on actual size change and not during init
 
 class XyComponent(metaclass=ABCMeta):
     """
@@ -41,7 +42,7 @@ class XyComponent(metaclass=ABCMeta):
 
         self._x = value
 
-        if self.parent:
+        if self.parent and REFRESH_PARENT:
             self.parent.update_position()
 
     @property
@@ -63,7 +64,7 @@ class XyComponent(metaclass=ABCMeta):
 
         self._width = value
 
-        if self.parent:
+        if self.parent and REFRESH_PARENT:
             self.parent.update_position()
 
     @property
@@ -85,7 +86,7 @@ class XyComponent(metaclass=ABCMeta):
 
         self._y = value
 
-        if self.parent:
+        if self.parent and REFRESH_PARENT:
             self.parent.update_position()
 
     @property
@@ -107,5 +108,5 @@ class XyComponent(metaclass=ABCMeta):
 
         self._height = value
 
-        if self.parent:
+        if self.parent and REFRESH_PARENT:
             self.parent.update_position()
