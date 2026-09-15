@@ -1,6 +1,6 @@
-import curses
 from typing import List
 
+from flight_deck.flight_deck_client.keys import FlightKey
 from flight_deck.flight_deck_component.base_component import BaseComponent
 from flight_deck.flight_deck_component.interaction_component import InteractionComponent
 
@@ -44,41 +44,32 @@ class FlightDeckDom:
         if self.selectedIndex > 0:
             self.select_component(self.selectedIndex - 1)
 
-    # TODO : Should not use curses but rather Display agnostic values
-    def onkey(self, char: int):
+    def onkey(self, key: FlightKey):
         if self.selectedIndex is None:
             return
-
-        if char == 0xa:  # Enter key
+        
+        if not key.special:
+            self.selected_component.inputChar(key.key)
+            return
+        
+        if key.key == "Enter":  # Enter key
             self.selected_component.enter()
 
-        elif char == curses.KEY_LEFT:
+        elif key.key == "Left":
             self.selected_component.goLeft()
 
-        elif char == curses.KEY_RIGHT:
+        elif key.key == "Right":
             self.selected_component.goRight()
 
-        elif char == curses.KEY_UP:
+        elif key.key == "Up":
             self.previous_component()
 
-        elif char == curses.KEY_DOWN:
+        elif key.key == "Down":
             self.next_component()
 
-        elif char == curses.KEY_SR:  # Scroll ?up?
-            pass
-            # self.client.display.scroll(-1)
-
-        elif char == curses.KEY_SF:  # Scroll ?down?
-            pass
-            # self.client.display.scroll(1)
-
-        elif char == 8:  # Del key
+        elif key.key == "Delete":  # Del key
             self.selected_component.delete()
 
-        elif char == curses.KEY_DC:
+        elif key.key == "Suppr":
             self.selected_component.suppr()
 
-        else:
-            self.selected_component.inputChar(chr(char))
-
-            #TODO : Map key start and end

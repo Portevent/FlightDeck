@@ -1,6 +1,7 @@
 import curses, curses.panel
 from collections.abc import Callable
 
+from flight_deck.flight_deck_client.keys import FlightKey
 from flight_deck.flight_deck_display.color import Color
 from flight_deck.flight_deck_display.display import FlightDeckDisplay, Position
 
@@ -109,9 +110,41 @@ class FlightDeckCursesDisplay(FlightDeckDisplay):
             char: int = self.input_windows.getch()
 
             if char == -1:
-                pass
+                continue
+
+            key = None
+
+            if char == 0xa:  # Enter key
+                key = FlightKey.special("Enter")
+
+            elif char == curses.KEY_LEFT:
+                key = FlightKey.special("Left")
+
+            elif char == curses.KEY_RIGHT:
+                key = FlightKey.special("Right")
+
+            elif char == curses.KEY_UP:
+                key = FlightKey.special("Up")
+
+            elif char == curses.KEY_DOWN:
+                key = FlightKey.special("Down")
+
+            elif char == curses.KEY_SR:  # Scroll ?up? reverse?
+                key = FlightKey.special("Scroll Up")
+
+            elif char == curses.KEY_SF:  # Scroll ?down? forward?
+                key = FlightKey.special("Scroll Down")
+
+            elif char == 8:  # Del key
+                key = FlightKey.special("Delete")
+
+            elif char == curses.KEY_DC:
+                key = FlightKey.special("Suppr")
+
             else:
-                onkey(char)
+                key = FlightKey.text(chr(char))
+
+            onkey(key)
 
     def clear(self):
         self.input_windows.clear()

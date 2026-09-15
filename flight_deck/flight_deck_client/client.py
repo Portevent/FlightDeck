@@ -1,5 +1,6 @@
 from typing import Type, Dict
 
+from flight_deck.flight_deck_client.keys import FlightKey
 from flight_deck.flight_deck_client.base_client import FlightDeckBaseClient
 from flight_deck.flight_deck_client.dom import FlightDeckDom
 from flight_deck.flight_deck_component.base_component import BaseComponent
@@ -68,6 +69,6 @@ class FlightDeck(FlightDeckBaseClient):
 
         self.display.start_listening(self.onkey)
 
-    def onkey(self, key: str):
+    def onkey(self, key: FlightKey):
         if self.dom:
             self.dom.onkey(key)
